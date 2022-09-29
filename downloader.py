@@ -70,9 +70,6 @@ def extract_target_class_list(
     # return list of Youtube ID
     return list(df_found["YTID"])
 
-
-
-
 if __name__=="__main__" : 
     parser = argparse.ArgumentParser()
     parser.add_argument('--target_class', '-c', type=str, required=True)
@@ -100,20 +97,24 @@ if __name__=="__main__" :
         'quiet':True,
         'logger': MyLogger(),
         'progress_hooks': [my_hook],
-        
     }
 
     cnt_togo = len(list_id)
     cnt_fail = 0
     cnt = 0
     for id in list_id :
-        print("[LOG] {:.2f}% {} / {} | fail {} | {} ".format((cnt+cnt_fail)/len(list_id) * 100,cnt+cnt_fail,len(list_id),cnt_fail,id ))
+        print("[LOG] {:.2f}% {} / {} | fail {} | {} | {} | {}".format((cnt+cnt_fail)/len(list_id) * 100,cnt+cnt_fail,len(list_id),cnt_fail,id,args.target_class,id_target ))
         try : 
-            with ydl.YoutubeDL(ydl_opts) as y:
-                y.download(["https://youtu.be/{}".format(id)])
+            if not os.path.exists(os.path.join(args.dir_out,args.target_class,id+".wav")) : 
+                with ydl.YoutubeDL(ydl_opts) as y:
+                    y.download(["https://youtu.be/{}".format(id)])
         except ydl.utils.DownloadError as e: 
             cnt_fail+=1
             print(e)
+            continue
+        except AttributeError as e: 
+            print(e)
+            cnt_fail+=1
             continue
         cnt+=1
 
