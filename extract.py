@@ -50,7 +50,7 @@ def extract(idx):
 
 if __name__ == "__main__" : 
 
-    cpu_num = int(cpu_count()/2)
+    cpu_num = int(cpu_count()/4)
 
     arr = list(range(len(csv.index)))
     with Pool(cpu_num) as p:
